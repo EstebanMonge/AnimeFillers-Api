@@ -27,6 +27,7 @@ Visiting urls one by one
 and creating api
 '''
 anime_list = []
+anime_list_count = []
 i = 0
 for link in anime_links:
     anime_page = urllib.request.urlopen(link)
@@ -44,17 +45,26 @@ for link in anime_links:
     #print(filler_list_odd)
     
     #print(episode_row_data.string)
-    
+
+    count = 0    
     for episode in filler_list_even:
         episode_name = episode.find('td',attrs = {"class":"Title"})
         episode_no = episode.find('td',attrs = {"class":"Number"})
         episode_air_date = episode.find('td',attrs = {"class":"Date"})
         anime_list[i]["fillers_list"].append({"name":episode_name.string,"episode_no":episode_no.string,"air_date":episode_air_date.string})
+        count +=1
+    canon_episodes = count
+    count = 0
     for episode in filler_list_odd:
         episode_name = episode.find('td',attrs = {"class":"Title"})
         episode_no = episode.find('td',attrs = {"class":"Number"})
         episode_air_date = episode.find('td',attrs = {"class":"Date"})
         anime_list[i]["fillers_list"].append({"name":episode_name.string,"episode_no":episode_no.string,"air_date":episode_air_date.string})
+        count +=1
+    filler_episodes = count
+    anime_list_count.append({"anime_name":anime_name,"fillers_list":[]})
+    anime_list_count[i]["fillers_list"].append({"canon":canon_episodes,"filler":filler_episodes})
+#    print(anime_name+","+str(canon_episodes)+","+str(filler_episodes))
     i += 1
     
 class AnimeFillersApi(Resource):
